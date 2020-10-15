@@ -2,8 +2,27 @@ import curses
 
 #funcion que maneja el menu
 def menu():
+    print("**Sokoban**\nDesea iniciar?(S/N)")
+    inicio = ""
+    while inicio.upper() != "S" and inicio.upper() !="N":
+        inicio = input()
+        if inicio.upper() != "S" and inicio.upper() !="N":
+            print("Error, escriba S o N")
+    if inicio.upper() == "S":
+        print("Partida nueva o antigua?(N/A)")
+        partida = ""
+        while partida.upper() != "N" and partida.upper() != "A":
+            partida = input()
+            if partida.upper() != "N" and partida.upper() != "A":
+                print("Error, escriba N o A")
+        if partida.upper() == "N":
+            nivel()
+        else:
+            abrir_Partida()
+    else:
+        return
+def abrir_Partida():
     pass
-
 #funcion que lee un archivo y regresa una lista de bloques
 def get_Blocks(num_level):
     pass
@@ -110,7 +129,7 @@ def nivel():
 
 
 def main():
-    nivel()
+    menu()
 #ENDDEF
 
 main()
