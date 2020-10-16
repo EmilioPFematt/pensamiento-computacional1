@@ -14,8 +14,6 @@ Aqui vamos a ir guardando todos los cambios que querramos hacer. Github nos ayud
 - ```git status``` te avisa en que branch trabajas y los cambios que has hecho
 - ```git fetch``` le dice a tu repo local las cosas que te faltan updatear
 - ```git pull origin``` descarga a tu repo local lo que se ha hecho
-## Hello 
-- dab
 
 
 Despues de subir los cambios a la nube podras crear un pull request y eso avisa a los colaboradores de los cambios que hiciste.
