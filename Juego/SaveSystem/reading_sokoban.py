@@ -14,11 +14,12 @@ def openLevel(fileName):
     blockLine = lines[1].split()
     wallLine = lines[2].split()
     goalLine = lines[3].split()
+    level = int(lines[4])
     playerMatrix = makeMatrix(playerLine)
     blockMatrix = makeMatrix(blockLine)
     wallMatrix = makeMatrix(wallLine)
     goalMatrix = makeMatrix(goalLine)
-    return playerMatrix, blockMatrix, wallMatrix, goalMatrix
+    return playerMatrix, blockMatrix, wallMatrix, goalMatrix, level
 def emptyMatrix(row, column):
     matriz = []
     for ren in range(row):
@@ -26,7 +27,6 @@ def emptyMatrix(row, column):
     return matriz
 def makeMatrix(line):
     row = int(line[0])
-    #column = int((len(line)-1)/2)
     column = 2
     length = 1
     matriz = emptyMatrix(row, column)
@@ -45,7 +45,7 @@ def makeLine(matriz):
             line.append(str(matriz[ren][col])+" ")
     line.append("\n")
     return line
-def savingLevel(player, block, wall, goal):
+def savingLevel(player, block, wall, goal, level):
     playerLine = makeLine(player)
     blockLine = makeLine(block)
     wallLine = makeLine(wall)
@@ -55,9 +55,10 @@ def savingLevel(player, block, wall, goal):
     file.writelines(blockLine)
     file.writelines(wallLine)
     file.writelines(goalLine)
+    file.writelines(str(level))
     file.close()
 def main():
-    player, block, wall, goal = openLevel("saving.txt")
+    player, block, wall, goal, level = openLevel("nivel.txt")
     print("Player: ", end="")
     print(player)
     print("Block: ", end="")
@@ -66,6 +67,8 @@ def main():
     print(wall)
     print("Goal: ", end="")
     print(goal)
-    savingLevel(player, block, wall, goal)
+    print("Level: ", end="")
+    print(level)
+    savingLevel(player, block, wall, goal, level)
 if __name__ == "__main__":
     main()
