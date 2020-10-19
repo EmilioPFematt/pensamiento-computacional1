@@ -6,9 +6,11 @@
 # un archivo .txt de nivel
 # Salida
 # listas para la posicion del jugador, bloques, paredes, y objetivos
+
 def openLevel(fileName):
     file = open(fileName, "r")
     lines = file.readlines()
+    #print(lines)
     file.close()
     playerLine = lines[0].split()
     blockLine = lines[1].split()
@@ -20,6 +22,7 @@ def openLevel(fileName):
     wallMatrix = makeMatrix(wallLine)
     goalMatrix = makeMatrix(goalLine)
     return playerMatrix, blockMatrix, wallMatrix, goalMatrix, level
+
 def emptyMatrix(row, column):
     matriz = []
     for ren in range(row):
@@ -58,6 +61,7 @@ def savingLevel(player, block, wall, goal, level):
     file.writelines(str(level))
     file.close()
 def main():
+    openLevel("nivel.txt")
     player, block, wall, goal, level = openLevel("nivel.txt")
     print("Player: ", end="")
     print(player)
@@ -70,5 +74,6 @@ def main():
     print("Level: ", end="")
     print(level)
     savingLevel(player, block, wall, goal, level)
+
 if __name__ == "__main__":
     main()

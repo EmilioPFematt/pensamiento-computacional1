@@ -1,4 +1,5 @@
 import curses
+from SaveSystem import reading_sokoban as level
 
 #funcion que maneja el menu
 def menu():
@@ -16,13 +17,18 @@ def menu():
             if partida.upper() != "N" and partida.upper() != "A":
                 print("Error, escriba N o A")
         if partida.upper() == "N":
-            nivel()
+            abrir_Partida(1)
         else:
-            abrir_Partida()
+            abrir_Partida(-1)
     else:
         return
-def abrir_Partida():
-    pass
+def abrir_Partida(num_level):
+    aux = True
+    while(aux):
+        aux = nivel(num_level)
+        if(aux):
+            num_level+=1
+    
 #funcion que lee un archivo y regresa una lista de bloques
 def get_Blocks(num_level):
     pass
@@ -32,7 +38,7 @@ def get_walls(num_level):
     pass
 
 #maneja movimientos del jugador y de los bloques
-def nivel():
+def nivel(num_level):
     scr = curses.initscr()
     curses.curs_set(0)
     curses.echo(0)
@@ -43,27 +49,24 @@ def nivel():
     win.keypad(1)
     win.timeout(100)
 
-    play_x = int(max_w/4)
-    play_y = int(max_h/2)
+    if num_level == -1 : 
+        jugador, blocks, walls, goals, num_level = level.openLevel("saving.txt")
+    else: 
+        jugador, blocks, walls, goals, num_level = level.openLevel("nivel" + str(num_level) + ".txt")
 
-    jugador = [
-        [play_y, play_x]
-    ]
-
-    blocks = [
-        [int(max_h/2), int(max_w/2)],
-        [int(max_h/2)+1, int(max_w/2)]
-    ]
-
-    walls = [
-        [10, 10]
-    ]
+    #print(jugador)
+    #print(blocks)
+    #print(walls)
+    #print(goals)
 
     for i in blocks:
         win.addch(i[0], i[1], 'B')
 
     for i in walls:
         win.addch(i[0], i[1], '#')
+
+    for i in goals:
+        win.addch(i[0], i[1], 'G')
 
     key = curses.KEY_BACKSPACE
 
@@ -73,10 +76,20 @@ def nivel():
         nxt_key = win.getch()
         key = curses.KEY_BACKSPACE if nxt_key == -1 else nxt_key
 
+        if (key == curses.KEY_F2):
+            win.addch(jugador[0][0], jugador[0][1], ' ')
+            for i in blocks: 
+                win.addch(i[0], i[1], ' ')
+            jugador, blocks, walls, goals, num_level = level.openLevel("nivel" + str(num_level) + ".txt")
+            win.addch(jugador[0][0], jugador[0][1], curses.ACS_PI)
+            for i in blocks: 
+                win.addch(i[0], i[1], 'B')
+
         #Si la tecla es F1 se sale del juego
         if(key == curses.KEY_F1):
             curses.endwin()
-            quit()
+            level.savingLevel(jugador, blocks, walls, goals, num_level)
+            return False
 
         #Hace el cambio de la nueva posicion
         new_pos = [jugador[0][0], jugador[0][1]]
@@ -123,7 +136,16 @@ def nivel():
         jugador.insert(0, new_pos)
 
         win.addch(jugador[0][0], jugador[0][1], curses.ACS_PI)
-        
+        goals_achieved = 0 
+        for i in goals:
+            if not (i in blocks) and not (i in jugador):
+                win.addch(i[0], i[1], 'G')
+            if i in blocks:
+                goals_achieved+=1
+        if (goals_achieved == len(goals)):
+            #epik gamer momento
+            curses.endwin()
+            return True
         jugador.pop()
         
 
