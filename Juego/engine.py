@@ -19,29 +19,35 @@ def menu():
         if partida.upper() == "N":
             abrir_Partida(1)
         else:
-            abrir_Partida(-1)
+            abrir_Partida(-1)            
     else:
         return
 def abrir_Partida(num_level):
     aux = True
     while(aux):
         aux = nivel(num_level)
-        if(aux):
-            num_level+=1
-    
-#funcion que lee un archivo y regresa una lista de bloques
-def get_Blocks(num_level):
-    pass
+        if(aux == -2):
+            print("No hay partida guardada")
+            return 0
+        if(aux>0):
+            num_level=aux
+            if(num_level >= 3):
+                print("Haz acabado todos los niveles. Felicidades! :)")
+                return 0
+        
 
-#funcion que lee un archivo y regresa una lista de paredes
-def get_walls(num_level):
-    pass
 
 #maneja movimientos del jugador y de los bloques
 def nivel(num_level):
     scr = curses.initscr()
+    curses.start_color()
     curses.curs_set(0)
     curses.echo(0)
+
+    curses.init_pair(1, curses.COLOR_CYAN, curses.COLOR_BLACK)
+    curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_YELLOW)
+    curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    curses.init_pair(4, curses.COLOR_WHITE, curses.COLOR_WHITE)
 
     max_h, max_w = scr.getmaxyx()
 
@@ -53,23 +59,25 @@ def nivel(num_level):
         jugador, blocks, walls, goals, num_level = level.openLevel("saving.txt")
     else: 
         jugador, blocks, walls, goals, num_level = level.openLevel("nivel" + str(num_level) + ".txt")
-
-    #print(jugador)
-    #print(blocks)
-    #print(walls)
-    #print(goals)
-
+    
     for i in blocks:
-        win.addch(i[0], i[1], 'B')
+        win.addch(i[0], i[1], 'X', curses.color_pair(2))
 
     for i in walls:
-        win.addch(i[0], i[1], '#')
+        win.addch(i[0], i[1], '#', curses.color_pair(4))
 
     for i in goals:
-        win.addch(i[0], i[1], 'G')
+        if not (i in blocks): 
+            win.addch(i[0], i[1], 'O', curses.color_pair(3))
+    
+    if(num_level == -2):
+        return -2
 
     key = curses.KEY_BACKSPACE
-
+    instrucciones = "F1 para guardar y salir. F2 para reiniciar nivel. Flechas para mover. Mueve todos los bloques( ) a los objetivos( )"
+    win.addstr(0, 0, instrucciones)
+    win.addch(0, len(instrucciones)-2, 'O', curses.color_pair(3))
+    win.addch(0, len(instrucciones)-21, 'X', curses.color_pair(2))
     while True : 
         box_error = 0 
         #Agarra tecla del usuario
@@ -81,9 +89,9 @@ def nivel(num_level):
             for i in blocks: 
                 win.addch(i[0], i[1], ' ')
             jugador, blocks, walls, goals, num_level = level.openLevel("nivel" + str(num_level) + ".txt")
-            win.addch(jugador[0][0], jugador[0][1], curses.ACS_PI)
+            win.addch(jugador[0][0], jugador[0][1], curses.ACS_PI, curses.color_pair(1))
             for i in blocks: 
-                win.addch(i[0], i[1], 'B')
+                win.addch(i[0], i[1], 'X', curses.color_pair(2))
 
         #Si la tecla es F1 se sale del juego
         if(key == curses.KEY_F1):
@@ -126,7 +134,7 @@ def nivel(num_level):
 
             if not(box_error):
                 blocks[block_index] = new_box
-                win.addch(blocks[block_index][0], blocks[block_index][1], 'B') 
+                win.addch(blocks[block_index][0], blocks[block_index][1], 'X', curses.color_pair(2)) 
 
         if(new_pos[0] >= max_h or new_pos[1] >= max_w-1  or new_pos[0]<=0 or new_pos[1]<=0 or box_error or (new_pos in walls)):
             new_pos = jugador[0]
@@ -135,17 +143,16 @@ def nivel(num_level):
 
         jugador.insert(0, new_pos)
 
-        win.addch(jugador[0][0], jugador[0][1], curses.ACS_PI)
+        win.addch(jugador[0][0], jugador[0][1], curses.ACS_PI, curses.color_pair(1))
         goals_achieved = 0 
         for i in goals:
             if not (i in blocks) and not (i in jugador):
-                win.addch(i[0], i[1], 'G')
+                win.addch(i[0], i[1], 'O', curses.color_pair(3))
             if i in blocks:
                 goals_achieved+=1
         if (goals_achieved == len(goals)):
-            #epik gamer momento
             curses.endwin()
-            return True
+            return num_level+1
         jugador.pop()
         
 
