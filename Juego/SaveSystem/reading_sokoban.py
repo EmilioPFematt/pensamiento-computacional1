@@ -6,6 +6,7 @@
 # un archivo .txt de nivel
 # Salida
 # listas para la posicion del jugador, bloques, paredes, y objetivos
+# Version utilzada de python: 3.8.5
 
 def openLevel(fileName):
     file = open(fileName, "r")
