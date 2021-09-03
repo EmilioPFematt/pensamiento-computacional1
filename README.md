@@ -2,7 +2,7 @@
 
 Aqui vamos a ir guardando todos los cambios que querramos hacer. Github nos ayuda a ver que cambios a hecho quien y nos avisa cuando se hicieron. 
 
-﻿# Para correr el juego
+#Para correr el juego
 
 Para correr el juego se corre engine.py
 
