@@ -7,10 +7,12 @@
 
 import curses
 from SaveSystem import reading_sokoban as level
+import os
 
 #Funcion menu, que permite al usuario decidir si quiere iniciar el juego y si quiere empezar un juego nuevo o empezar uno antiguo
 #Autor: Jose Carlos de la Torre Hernandez
 def menu():
+
     print("**Sokoban**\nDesea iniciar?(S/N)")
     inicio = ""
     while inicio.upper() != "S" and inicio.upper() !="N":
@@ -49,6 +51,14 @@ def abrir_Partida(num_level):
 #Funcion que recibe el numero de nivel carga los objetos del mismo, tambien se encarga del movimiento del jugador
 #Autor: Emilio Perez
 def nivel(num_level):
+    #encuentra directorio del archivo
+    dir = [x for x in os.path.dirname(os.path.realpath(__file__)).split('\\') if x != "Juego"]
+    pathName = ""
+    for i in dir: 
+        pathName = os.path.join(pathName, i)
+        if pathName == "C:" : pathName+="\\"
+    print(pathName)
+
     #Inicializa la libreria de curses
     scr = curses.initscr()
     curses.start_color()
@@ -69,9 +79,9 @@ def nivel(num_level):
 
     #Carga los datos del nivel en la pantalla
     if num_level == -1 : 
-        jugador, blocks, walls, goals, num_level = level.openLevel("saving.txt")
+        jugador, blocks, walls, goals, num_level = level.openLevel(os.path.join(pathName, "saving.txt"))
     else: 
-        jugador, blocks, walls, goals, num_level = level.openLevel("nivel" + str(num_level) + ".txt")
+        jugador, blocks, walls, goals, num_level = level.openLevel(os.path.join(pathName, "nivel" + str(num_level) + ".txt"))
     for i in blocks:
         win.addch(i[0], i[1], 'X', curses.color_pair(2))
     for i in walls:
@@ -102,7 +112,7 @@ def nivel(num_level):
             win.addch(jugador[0][0], jugador[0][1], ' ')
             for i in blocks: 
                 win.addch(i[0], i[1], ' ')
-            jugador, blocks, walls, goals, num_level = level.openLevel("nivel" + str(num_level) + ".txt")
+            jugador, blocks, walls, goals, num_level = level.openLevel(os.path.join(pathName, "nivel" + str(num_level) + ".txt"))
             win.addch(jugador[0][0], jugador[0][1], curses.ACS_PI, curses.color_pair(1))
             for i in blocks: 
                 win.addch(i[0], i[1], 'X', curses.color_pair(2))
@@ -110,7 +120,7 @@ def nivel(num_level):
         #Si la tecla es F1 se sale del juego
         if(key == curses.KEY_F1):
             curses.endwin()
-            level.savingLevel(jugador, blocks, walls, goals, num_level)
+            level.savingLevel( pathName, jugador, blocks, walls, goals, num_level)
             return False
 
         #Hace el cambio de la nueva posicion

@@ -8,6 +8,8 @@
 # listas para la posicion del jugador, bloques, paredes, y objetivos
 # Version utilzada de python: 3.8.5
 
+import os
+
 def openLevel(fileName):
     file = open(fileName, "r")
     lines = file.readlines()
@@ -49,12 +51,12 @@ def makeLine(matriz):
             line.append(str(matriz[ren][col])+" ")
     line.append("\n")
     return line
-def savingLevel(player, block, wall, goal, level):
+def savingLevel(dir, player, block, wall, goal, level):
     playerLine = makeLine(player)
     blockLine = makeLine(block)
     wallLine = makeLine(wall)
     goalLine = makeLine(goal)
-    file = open("saving.txt", "w")
+    file = open(os.path.join(dir, "saving.txt"), "w")
     file.writelines(playerLine)
     file.writelines(blockLine)
     file.writelines(wallLine)
